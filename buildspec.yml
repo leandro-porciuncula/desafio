@@ -2,48 +2,33 @@ version: 0.2
 
 env:
   variables:
-    # Nome do repositório no ECR (ajuste para o nome real do repositório)
     IMAGE_REPO_NAME: "meu-backend-node"
-    # Tag da imagem (pode depois ser parametrizado com número de build, por exemplo)
     IMAGE_TAG: "latest"
 
 phases:
   pre_build:
     commands:
       - echo "Iniciando fase de pre_build..."
-      - echo "Instalando dependências da AWS CLI (se necessário) e verificando versão..."
-      - aws --version
-
-      - echo "Obtendo ID da conta AWS..."
       - ACCOUNT_ID=$(aws sts get-caller-identity --query 'Account' --output text)
-
-      - echo "Definindo região a partir da variável de ambiente do CodeBuild..."
+      - echo "ACCOUNT_ID"
       - REGION=${AWS_DEFAULT_REGION}
-
-      - echo "Montando URI do repositório ECR..."
+      - echo "REGION"
       - REPOSITORY_URI=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${IMAGE_REPO_NAME}
       - echo "REPOSITORY_URI=${REPOSITORY_URI}"
-
-      - echo "Fazendo login no Amazon ECR..."
-      - aws ecr get-login-password --region ${REGION} \
-        | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
+      - echo "Fazendo login no ECR..."
+      - aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com
 
   build:
     commands:
-      - echo "Iniciando fase de build em $(date)..."
-      - echo "Construindo imagem Docker a partir do Dockerfile..."
+      - echo "Build da imagem..."
       - docker build -t ${IMAGE_REPO_NAME}:${IMAGE_TAG} .
-
-      - echo "Tagueando imagem com a URI do ECR..."
       - docker tag ${IMAGE_REPO_NAME}:${IMAGE_TAG} ${REPOSITORY_URI}:${IMAGE_TAG}
 
   post_build:
     commands:
-      - echo "Iniciando fase de post_build em $(date)..."
-      - echo "Fazendo push da imagem para o ECR..."
+      - echo "Fazendo push da imagem..."
       - docker push ${REPOSITORY_URI}:${IMAGE_TAG}
-
-      - echo "Gerando arquivo imagedefinitions.json para o CodePipeline/ECS..."
+      - echo "Gerando imagedefinitions.json..."
       - printf '[{"name":"%s","imageUri":"%s"}]' "container-backend" "${REPOSITORY_URI}:${IMAGE_TAG}" > imagedefinitions.json
       - cat imagedefinitions.json
 
