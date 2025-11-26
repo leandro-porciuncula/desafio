@@ -1,4 +1,4 @@
-require('dotenv').config();
+afiorequire('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.status(200).send('OK');
+  res.status(200).send('Desafio');
 });
 
 // 🖼️ Servir imagens da pasta uploads
