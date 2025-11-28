@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/', (req, res) => {
-  res.status(200).send('OK1');
+  res.status(200).send('Desafio AWS');
 });
 
 // Servir imagens da pasta uploads
