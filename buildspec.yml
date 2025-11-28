@@ -2,7 +2,7 @@ version: 0.2
 
 env:
   variables:
-    IMAGE_REPO_NAME: "testedesafio"
+    IMAGE_REPO_NAME: "desafio"
     IMAGE_TAG: "latest"
 
 phases:
