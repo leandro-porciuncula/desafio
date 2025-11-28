@@ -29,7 +29,7 @@ phases:
       - echo "Fazendo push da imagem..."
       - docker push ${REPOSITORY_URI}:${IMAGE_TAG}
       - echo "Gerando imagedefinitions.json..."
-      - printf '[{"name":"%s","imageUri":"%s"}]' "desafio" "${REPOSITORY_URI}:${IMAGE_TAG}" > imagedefinitions.json
+      - printf '[{"name":"%s","imageUri":"%s"}]' "dasafio" "${REPOSITORY_URI}:${IMAGE_TAG}" > imagedefinitions.json
       - cat imagedefinitions.json
 
 artifacts:
